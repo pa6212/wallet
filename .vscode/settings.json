@@ -21,13 +21,22 @@
       "**/yarn-error.log": true,
       "packages\\eth-hooks/lib": true
    },
+   "files.eol": "\n",
    "explorerExclude.backup": null,
+   "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+   ],
    "eslint.workingDirectories": [
-   
       { "directory": "packages/eth-hooks", "changeProcessCWD": true },
       { "directory": "packages/hardhat-ts", "changeProcessCWD": true },
       { "directory": "packages/vite-app-ts", "changeProcessCWD": true },
    ],
+   "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
    "search.exclude": {
       "**/yarn-error.log": true,
       "**/yarn.lock": true
