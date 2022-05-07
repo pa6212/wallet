@@ -25,9 +25,7 @@
    "explorerExclude.backup": null,
    "eslint.validate": [
       "javascript",
-      "javascriptreact",
-      "typescript",
-      "typescriptreact",
+      "javascriptreact"
    ],
    "eslint.workingDirectories": [
       { "directory": "packages/eth-hooks", "changeProcessCWD": true },
@@ -35,7 +33,14 @@
       { "directory": "packages/vite-app-ts", "changeProcessCWD": true },
    ],
    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
+      "source.fixAll.eslint": true,
+      "source.fixAll.prettier": true
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
    "search.exclude": {
       "**/yarn-error.log": true,

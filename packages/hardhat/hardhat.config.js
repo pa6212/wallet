@@ -1,7 +1,10 @@
-require("dotenv").config();
+const path = require('path')
+require("dotenv").config({ path: path.resolve('../../.env')});
+
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
+const { resolve } = require('path');
 
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
@@ -27,7 +30,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "hardhat";
 
 const mainnetGwei = 21;
 
@@ -65,6 +68,11 @@ module.exports = {
   // Follow the directions, and uncomment the network you wish to deploy to.
 
   networks: {
+    hardhat: {
+      forking: {
+        url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+      }
+    },
     localhost: {
       url: "http://localhost:8545",
       /*      
@@ -262,7 +270,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.4",
+        version: "0.8.10",
         settings: {
           optimizer: {
             enabled: true,

@@ -14,7 +14,7 @@ module.exports = {
       "ignorePackages",
       {
         js: "never",
-        ts: "never",
+        ts: "never"
       },
     ],
     "import/prefer-default-export": "off",

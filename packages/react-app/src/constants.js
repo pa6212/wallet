@@ -1,3 +1,6 @@
+const path = require('path')
+require("dotenv").config({ path: path.resolve('../../.env')});
+
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = process.env.INFURA_PROJECT_ID;
 
