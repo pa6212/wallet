@@ -13,9 +13,26 @@ const network = 'hardhat';
 const chainId = 31337;
 
 const { contracts } = deployedContracts[chainId][network];
-const { Wallet: walletContract } = contracts;
+const { Wallet } = contracts;
 
 function App(props) {
+  const provider = new ethers.providers.JsonRpcProvider(
+    `http://127.0.0.1:8545`
+  );
+  const walletContract = new ethers.Contract(
+    Wallet.address,
+    Wallet.abi,
+    provider
+  );
+
+  useEffect(() => {
+    const getOwner = async () => {
+      console.log(walletContract);
+      let owner = await walletContract.owner();
+      console.log(owner);
+    };
+    getOwner();
+  }, []);
   return <div className='App'>Hello</div>;
 }
 
