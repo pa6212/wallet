@@ -49,28 +49,14 @@ function mnemonic() {
 
 module.exports = {
   defaultNetwork,
-
-  /**
-   * gas reporter configuration that let's you know
-   * an estimate of gas for contract deployments and function calls
-   * More here: https://hardhat.org/plugins/hardhat-gas-reporter.html
-   */
   gasReporter: {
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
   },
-
-  // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
-  // 1. An Infura key (or similar)
-  // 2. A private key for the deployer
-  // DON'T PUSH THESE HERE!!!
-  // An `example.env` has been provided in the Hardhat root. Copy it and rename it `.env`
-  // Follow the directions, and uncomment the network you wish to deploy to.
-
   networks: {
     hardhat: {
       forking: {
-        url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+        url: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
       }
     },
     localhost: {
@@ -294,7 +280,7 @@ module.exports = {
   },
   namedAccounts: {
     deployer: {
-      default: 0, // here this will by default take the first account as deployer
+      default: `privatekey://${process.env.PRIVATE_KEY}`, // here this will by default take the first account as deployer
     },
   },
   etherscan: {
@@ -312,6 +298,29 @@ module.exports = {
     spacing: 2,
     pretty: false,
   },
+  send: function(signer, txparams) {
+    return signer.sendTransaction(txparams, (error, transactionHash) => {
+      if (error) {
+        debug(`Error: ${error}`);
+      }
+      debug(`transactionHash: ${transactionHash}`);
+      // checkForReceipt(2, params, transactionHash, resolve)
+    });
+  },
+  fundWallet: function(address,amount){
+    const tx = {
+      to: address,
+      value: ethers.utils.parseEther(amount),
+    };
+
+    return ethers.provider.getSigner().sendTransaction(tx, (error, transactionHash) => {
+      if (error) {
+        debug(`Error: ${error}`);
+      }
+      debug(`transactionHash: ${transactionHash}`);
+    });
+  }
+
 };
 
 const DEBUG = false;
@@ -567,16 +576,6 @@ task("balance", "Prints an account's balance")
     );
     console.log(formatUnits(balance, "ether"), "ETH");
   });
-
-function send(signer, txparams) {
-  return signer.sendTransaction(txparams, (error, transactionHash) => {
-    if (error) {
-      debug(`Error: ${error}`);
-    }
-    debug(`transactionHash: ${transactionHash}`);
-    // checkForReceipt(2, params, transactionHash, resolve)
-  });
-}
 
 task("send", "Send ETH")
   .addParam("from", "From address or account index")

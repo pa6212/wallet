@@ -1,30 +1,33 @@
 const { ethers } = require("hardhat");
 
+const {fundWallet} = require('../hardhat.config.js')
+
 const localChainId = "31337";
 
-// const sleep = (ms) =>
-//   new Promise((r) =>
-//     setTimeout(() => {
-//       console.log(`waited for ${(ms / 1000).toFixed(3)} seconds`);
-//       r();
-//     }, ms)
-//   );
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
+
   const chainId = await getChainId();
 
+  fundWallet(deployer, '100')
+
   await deploy("Wallet", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
     waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("Wallet", deployer);
+  const walletContract = await ethers.getContract("Wallet", deployer);
+
+  const deployerWallet = ethers.provider.getSigner()
+
+  await deployerWallet.sendTransaction({
+    to: walletContract.address,
+    value: ethers.utils.parseEther("100")
+  })
+
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
