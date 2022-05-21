@@ -15,9 +15,10 @@ const network = 'hardhat';
 const chainId = 31337;
 
 const { contracts } = deployedContracts[chainId][network];
-const provider = new ethers.providers.JsonRpcProvider(`http://127.0.0.1:8545`);
-
 const { Wallet } = contracts;
+const provider = new ethers.providers.JsonRpcProvider(`http://127.0.0.1:8545`);
+// const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+console.log(process.env);
 const walletContract = new ethers.Contract(
   Wallet.address,
   Wallet.abi,
@@ -32,10 +33,18 @@ function App() {
     )
   );
   console.log(contract);
+  useEffect(() => {
+    const getBalance = async () => {
+      const balance = await contract.balance();
+      console.log(balance);
+    };
+    //getBalance();
+  });
   return (
     <div className='App'>
+      <div>{contract.address}</div>
       {methods.map((method) => {
-        return <Button contract={contract} method={method} />;
+        return <Button key={method.name} contract={contract} method={method} />;
       })}
     </div>
   );

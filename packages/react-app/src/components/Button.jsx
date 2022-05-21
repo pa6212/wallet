@@ -7,15 +7,14 @@ function Button({ contract, method }) {
   const [values, setValues] = useState(Array(method.inputs.length));
 
   const handleClick = async () => {
-    //contract[method.name](...values);
-    console.log(values);
+    const res = (await contract[method.name](...values)).toString() / 1e18;
+    console.log('res: ', res);
   };
 
-  const handleChange = (e, idx) => {
+  const handleChange = (e, idx, inputType) => {
     const newValues = values;
-    newValues[idx] = isNaN(parseInt(e.target.value, 16))
-      ? Number(e.target.value)
-      : e.target.value;
+    newValues[idx] =
+      inputType === 'address' ? String(e.target.value) : Number(e.target.value);
     setValues(newValues);
   };
 
@@ -23,12 +22,12 @@ function Button({ contract, method }) {
     <div className='Button'>
       <div className='inputContainer'>
         {inputs.map((input, idx) => {
-          console.log(input.type.substring(0, 2));
           return (
             <input
+              key={input.name}
               className='input'
               placeholder={input.name}
-              onChange={(e) => handleChange(e, idx)}
+              onChange={(e) => handleChange(e, idx, input.type)}
             />
           );
         })}

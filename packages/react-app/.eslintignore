@@ -1,6 +1,7 @@
 # folders
 build/
 node_modules/
+contracts/
 # files
 **/*.less
 **/*.css
