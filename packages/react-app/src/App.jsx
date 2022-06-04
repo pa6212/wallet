@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex';
 import './style/App.css';
+import {Paper} from '@material-ui/core';
 
 import Button from './components/Button';
 import externalContracts from './contracts/external_contracts';
@@ -17,13 +18,8 @@ const chainId = 31337;
 const { contracts } = deployedContracts[chainId][network];
 const { Wallet } = contracts;
 const provider = new ethers.providers.JsonRpcProvider(`http://127.0.0.1:8545`);
-// const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-console.log(process.env);
-const walletContract = new ethers.Contract(
-  Wallet.address,
-  Wallet.abi,
-  provider
-);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const walletContract = new ethers.Contract(Wallet.address, Wallet.abi, signer);
 
 function App() {
   const [contract, setContract] = useState(walletContract);
@@ -33,16 +29,15 @@ function App() {
     )
   );
   console.log(contract);
-  useEffect(() => {
-    const getBalance = async () => {
-      const balance = await contract.balance();
-      console.log(balance);
-    };
-    //getBalance();
-  });
+
   return (
     <div className='App'>
-      <div>{contract.address}</div>
+      <Paper 
+        className='addressContainer'
+        elevation='4'
+      >
+        <span className='address'>{contract.address}</span>
+      </Paper>
       {methods.map((method) => {
         return <Button key={method.name} contract={contract} method={method} />;
       })}

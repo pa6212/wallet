@@ -7,6 +7,7 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import {IUniswapV2Router02} from '../interfaces/uniswap/IUniswapV2Router02.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import {IERC20Metadata} from '@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol';
 
 contract Wallet {
 
@@ -29,49 +30,55 @@ contract Wallet {
     _;
   }
 
-  function buy(address _token) public payable onlyOwner {
+  function buy(address _tokenAddress, uint256 _ethAmount) public onlyOwner returns(  uint256 ){
     address[] memory path = new address[](2);
     path[0] = uniswapRouter.WETH();
-    path[1] = _token;
-
-    uint[] memory amounts = uniswapRouter.swapExactETHForTokens{value: msg.value}(
+    path[1] = _tokenAddress;
+    uint256 amountIn = _ethAmount * 10**18;
+    uint[] memory amounts = uniswapRouter.swapExactETHForTokens{value: amountIn}(
       1,
       path,
       address(this),
       block.timestamp + 5 seconds
     );
 
-    assets[_token] += amounts[amounts.length - 1];
+    assets[_tokenAddress] += amounts[amounts.length - 1];
+    return amounts[amounts.length - 1];
   }
   
-  function send(address _tokenAddress, uint _amount, address _recipient) public payable onlyOwner {
-    require(assets[_tokenAddress] - _amount > 0, 'Insufficient amount to transfer.');
-    IERC20(_tokenAddress).transfer( _recipient, _amount);
-    assets[_tokenAddress] -= _amount;
+  function send(address _tokenAddress, uint _amount, address _recipient) public payable onlyOwner returns(uint256){
+    uint256 amount = _amount * 10**IERC20Metadata(_tokenAddress).decimals();
+    require(assets[_tokenAddress] > amount, 'Insufficient amount to transfer.');
+    IERC20(_tokenAddress).transfer( _recipient, amount);
+    //assets[_tokenAddress] -= amount;
+    return amount;
   }
 
-  function swap(address _tokenIn, uint256 _amountIn, address _tokenOut) public payable onlyOwner {
-    require(assets[_tokenIn] - _amountIn > 0, 'Insufficient amount to swap.');
+  function swap(address _tokenIn, uint256 _amountIn, address _tokenOut) public payable onlyOwner returns(uint256){
+    uint256 amountIn = _amountIn * 10**IERC20Metadata(_tokenIn).decimals();
+    require(assets[_tokenIn] >  amountIn, 'Insufficient amount to swap.');
 
-    IERC20(_tokenIn).approve(address(uniswapRouter), _amountIn);
+    IERC20(_tokenIn).approve(address(uniswapRouter), amountIn);
     
     address[] memory path = new address[](2);
     path[0] = _tokenIn;
     path[1] = _tokenOut;
 
     uint[] memory amounts = uniswapRouter.swapExactTokensForTokens(
-      _amountIn,
+      amountIn,
       0,
       path,
       address(this),
       block.timestamp + 5 seconds
     );
 
-    assets[_tokenIn] -= _amountIn;
+    assets[_tokenIn] -= amountIn;
     assets[_tokenOut] += amounts[amounts.length - 1];
+
+    return amounts[amounts.length - 1];
   }
 
-  function balance() public view returns(uint256){
+  function balance() public view returns(uint){
     return address(this).balance;
   }
 

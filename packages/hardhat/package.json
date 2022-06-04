@@ -29,14 +29,15 @@
     "hardhat-gas-reporter": "^1.0.4",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
     "chain": "hardhat node --network hardhat --no-deploy",
     "fork": "dotenv cross-var hardhat node --fork https://mainnet.infura.io/v3/%INFURA_PROJECT_ID%",
     "test": "hardhat test --network hardhat",
     "compile": "hardhat compile",
-    "deploy": "hardhat deploy --export-all ../react-app/src/contracts/hardhat_contracts.json",
+    "deploy": "rimraf ../react-app/src/contracts/hardhat_contracts.json && hardhat deploy --export-all ../react-app/src/contracts/hardhat_contracts.json",
     "postdeploy": "hardhat run scripts/publish.js",
     "watch": "node scripts/watch.js",
     "accounts": "hardhat accounts",

@@ -4,4 +4,18 @@
   text-align: center;
   padding-left: calc(100vw - 100%);
   justify-content: space-evenly;
+  align-items: center;
+}
+
+.addressContainer{
+  display:flex;
+  height: 50px;
+  width: 700px;
+  font-size: 20px;
+  align-items: center;
+  margin-bottom: 6.25px;
+}
+
+.address{
+  margin:auto
 }
