@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex';
 import './style/App.css';
-import {Paper} from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 
 import Button from './components/Button';
 import externalContracts from './contracts/external_contracts';
@@ -32,9 +32,12 @@ function App() {
 
   return (
     <div className='App'>
-      <Paper 
+      <Paper
         className='addressContainer'
         elevation='4'
+        onClick={() => {
+          navigator.clipboard.writeText(contract.address);
+        }}
       >
         <span className='address'>{contract.address}</span>
       </Paper>
